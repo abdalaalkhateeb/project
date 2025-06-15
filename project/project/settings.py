@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DATABASE_ROUTERS = ['project.routers.ExternalRouter']
+
 
 # Application definition
 
@@ -41,11 +44,16 @@ INSTALLED_APPS = [
     'core',
     'contact_us',
     'hotels',
+    'restaurant',
+    'booking',
+    'attractions',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'accounts',
+    'django_filters',
+    'chatbot',
 ]
 
 MIDDLEWARE = [
@@ -103,6 +111,10 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'external': {
         'ENGINE': 'mssql',
         'NAME': 'Tour',
         'USER': 'django_user',
@@ -116,23 +128,20 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 #هو مفتاح (توكن) يمثل المستخدم، بنرسله في كل طلب لحماية الواجهات.
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'ROTATE_REFRESH_TOKENS': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # أو أكثر إذا أردت
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 # Password validation
@@ -155,12 +164,14 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'#هذا يحدد المحرك (backend) الذي سيستخدمه Django لإرسال الإيميلات.
-EMAIL_HOST = 'smtp.gmail.com'# هذا هو عنوان الخادم (السيرفر) الخاص بالإيميل.
-EMAIL_PORT = 587 #رقم المنفذ (port) الذي يستخدمه SMTP مع التشفير (TLS).
-EMAIL_HOST_USER = 'your_email@gmail.com'# هو الإيميل الذي يستخدمه Django للاتصال بخادم الإيميل (SMTP) عشان يرسل الرسالة.
-EMAIL_HOST_PASSWORD = 'your_password_or_app_password'
-EMAIL_USE_TLS = True
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'#هذا يحدد المحرك (backend) الذي سيستخدمه Django لإرسال الإيميلات.
+# EMAIL_HOST = 'smtp.gmail.com'# هذا هو عنوان الخادم (السيرفر) الخاص بالإيميل.
+# EMAIL_PORT = 587 #رقم المنفذ (port) الذي يستخدمه SMTP مع التشفير (TLS).
+# EMAIL_HOST_USER = 'your_email@gmail.com'# هو الإيميل الذي يستخدمه Django للاتصال بخادم الإيميل (SMTP) عشان يرسل الرسالة.
+# EMAIL_HOST_PASSWORD = 'your_password_or_app_password'
+# EMAIL_USE_TLS = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

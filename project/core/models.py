@@ -14,16 +14,18 @@ class Attraction(models.Model):
     location = models.CharField(db_column='Location', max_length=100, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
     type = models.CharField(db_column='Type', max_length=50, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
     description = models.TextField(db_column='Description', db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
-    hours_of_operation = models.CharField(db_column='Hours_Of_Operation', max_length=100, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
+    hours_of_operation = models.CharField(db_column='Hours_Of_Operation', max_length=100, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True,
+                                           null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'Attraction'
+        app_label = 'attractions'
 
 
 class Booking(models.Model):
     booking_id = models.AutoField(db_column='Booking_ID', primary_key=True)  # Field name made lowercase.
-    user = models.ForeignKey('User', models.DO_NOTHING, db_column='User_ID', blank=True, null=True)  # Field name made lowercase.
+    user = models.ForeignKey('accounts.User', models.DO_NOTHING, db_column='User_ID', blank=True, null=True,db_constraint=False)  # Field name made lowercase.
     entity_id = models.IntegerField(db_column='Entity_ID', blank=True, null=True)  # Field name made lowercase.
     booking_type = models.CharField(db_column='Booking_Type', max_length=50, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
     booking_date = models.DateField(db_column='Booking_Date', blank=True, null=True)  # Field name made lowercase.
@@ -33,7 +35,7 @@ class Booking(models.Model):
     class Meta:
         managed = False
         db_table = 'Booking'
-
+        app_label = 'booking'
 
 class Chatbot(models.Model):
     chatbot_id = models.AutoField(db_column='Chatbot_ID', primary_key=True)  # Field name made lowercase.
@@ -55,15 +57,17 @@ class Hotel(models.Model):
     price_range = models.CharField(db_column='Price_Range', max_length=50, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
     contact_info = models.CharField(db_column='Contact_Info', max_length=100, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
     available_rooms = models.IntegerField(db_column='Available_Rooms', blank=True, null=True)  # Field name made lowercase.
+    description = models.CharField(db_column='Description', max_length=500, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'Hotel'
+        app_label = 'rooms'
 
 
 class Notification(models.Model):
     notification_id = models.AutoField(db_column='Notification_ID', primary_key=True)  # Field name made lowercase.
-    user = models.ForeignKey('User', models.DO_NOTHING, db_column='User_ID', blank=True, null=True)  # Field name made lowercase.
+    user = models.ForeignKey('accounts.User', models.DO_NOTHING, db_column='User_ID', blank=True, null=True,db_constraint=False)  # Field name made lowercase.
     message = models.TextField(db_column='Message', db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
     notification_type = models.CharField(db_column='Notification_Type', max_length=50, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
     sent_date = models.DateField(db_column='Sent_Date', blank=True, null=True)  # Field name made lowercase.
@@ -76,7 +80,7 @@ class Notification(models.Model):
 
 class Payment(models.Model):
     payment_id = models.AutoField(db_column='Payment_ID', primary_key=True)  # Field name made lowercase.
-    user = models.ForeignKey('User', models.DO_NOTHING, db_column='User_ID', blank=True, null=True)  # Field name made lowercase.
+    user = models.ForeignKey('accounts.User', models.DO_NOTHING, db_column='User_ID', blank=True, null=True,db_constraint=False)  # Field name made lowercase.
     booking = models.ForeignKey(Booking, models.DO_NOTHING, db_column='Booking_ID', blank=True, null=True)  # Field name made lowercase.
     payment_date = models.DateField(db_column='Payment_Date', blank=True, null=True)  # Field name made lowercase.
     amount = models.DecimalField(db_column='Amount', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
@@ -86,11 +90,11 @@ class Payment(models.Model):
     class Meta:
         managed = False
         db_table = 'Payment'
-
+        app_label = 'booking'
 
 class Recommendation(models.Model):
     recommendation_id = models.AutoField(db_column='Recommendation_ID', primary_key=True)  # Field name made lowercase.
-    user = models.ForeignKey('User', models.DO_NOTHING, db_column='User_ID', blank=True, null=True)  # Field name made lowercase.
+    user = models.ForeignKey('accounts.User', models.DO_NOTHING, db_column='User_ID', blank=True, null=True,db_constraint=False)  # Field name made lowercase.
     entity_id = models.IntegerField(db_column='Entity_ID', blank=True, null=True)  # Field name made lowercase.
     recommendation_type = models.CharField(db_column='Recommendation_Type', max_length=50, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
 
@@ -108,15 +112,17 @@ class Restaurant(models.Model):
     price_range = models.CharField(db_column='Price_Range', max_length=50, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
     contact_info = models.CharField(db_column='Contact_Info', max_length=100, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
     availability = models.BooleanField(db_column='Availability', blank=True, null=True)  # Field name made lowercase.
+    description = models.CharField(db_column='Description', max_length=500, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'Restaurant'
+        app_label = 'restaurant'
 
 
 class Review(models.Model):
     review_id = models.AutoField(db_column='Review_ID', primary_key=True)  # Field name made lowercase.
-    user = models.ForeignKey('User', models.DO_NOTHING, db_column='User_ID', blank=True, null=True)  # Field name made lowercase.
+    user = models.ForeignKey('accounts.User', models.DO_NOTHING, db_column='User_ID', blank=True, null=True,db_constraint=False)  # Field name made lowercase.
     entity_id = models.IntegerField(db_column='Entity_ID', blank=True, null=True)  # Field name made lowercase.
     entity_type = models.CharField(db_column='Entity_Type', max_length=50, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
     rating = models.IntegerField(db_column='Rating', blank=True, null=True)  # Field name made lowercase.
@@ -135,6 +141,8 @@ class Room(models.Model):
     price_per_night = models.DecimalField(db_column='Price_Per_Night', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     availability = models.BooleanField(db_column='Availability', blank=True, null=True)  # Field name made lowercase.
     capacity = models.IntegerField(db_column='Capacity', blank=True, null=True)  # Field name made lowercase.
+    description = models.CharField(db_column='Description', max_length=500, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # Field name made lowercase.
+
     @property
     def id(self):
         return self.room_id
@@ -142,6 +150,7 @@ class Room(models.Model):
     class Meta:
         managed = False
         db_table = 'Room'
+        app_label = 'rooms'
 
 
 class Tour(models.Model):
@@ -187,6 +196,7 @@ class User(models.Model):
     class Meta:
         managed = False
         db_table = 'User'
+        app_label = 'accounts'
 
 
 class Weather(models.Model):
